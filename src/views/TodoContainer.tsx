@@ -1,26 +1,39 @@
 import * as React from "react";
-import {useState} from "react";
 import {ListItemModel} from "../models/ListItemModel";
 import {ListItem} from "./ListItem";
+import '../styles/TodoStyles.scss'
+import {observer} from "mobx-react";
+import TodoStore from '../store/TodoStore'
 
-function TodoContainer(props:any) {
+function TodoContainer(props: any) {
 
-    const [tasks, addTask] = useState<ListItemModel[]>([]);
 
-    const EnterPressHandler =(e:any)=>{
+   const {TasksContext} = TodoStore;
+
+    const clear = (e: any) =>{
+        e.target.value = "";
+    }
+
+    const deleteHandler = (id: number)=>{
+
+        const searchId: number = TasksContext.findIndex(x=>x.id ===id);
+        console.log(searchId);
+        TasksContext.splice(searchId,1);
+    }
+
+    const EnterPressHandler =(e: any)=>{
 
         if(e.charCode ===13){
-            let listItem:ListItemModel = {
-                id:tasks.length,
-                title:"123",
+
+            const listItem: ListItemModel = {
+                id:TasksContext.length,
+                title:e.target.value,
                 status:true,
+                deleteHandler:deleteHandler
             };
 
+            TasksContext.push(listItem);
 
-            listItem.id = tasks.length;
-            listItem.title = e.target.value;
-            listItem.status = false;
-            addTask(oldArray => [...oldArray, listItem]);
             clear(e);
         }
 
@@ -28,20 +41,26 @@ function TodoContainer(props:any) {
 
     }
 
-    const clear = (e:any) =>{
-        e.target.value = "";
-    }
+
+
 
     return(
 
-    <div>
-        <h1>Active tasks:{tasks.length}</h1>
-        <input onKeyPress={(e)=>EnterPressHandler(e)}/>
-        {tasks.map((item:ListItemModel)=>{
-            return <ListItem id={item.id} title={item.title} status={item.status}/>
-        })}
+    <div className={""}>
+        <h1 className={'todoHeader'}>Active tasks:{TasksContext.length}</h1>
+
+
+        <div className={"todoContainerSize centralPosition todoContainer"}>
+            <input className={'mt-20'} onKeyPress={(e)=>EnterPressHandler(e)}/>
+            {TasksContext.map((item: ListItemModel)=>{
+                // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+                // @ts-ignore
+                return <ListItem className={"todoItemContainer"} id={item.id} title={item.title} status={item.status} deleteHandler={deleteHandler} />
+            })}
+
+        </div>
     </div>)
 
 }
 
-export default TodoContainer;
+export default observer(TodoContainer);

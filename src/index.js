@@ -2,7 +2,11 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/css/bootstrap-grid.css'
+import 'bootstrap/dist/css/bootstrap-grid.min.css.map'
 import * as serviceWorker from './serviceWorker';
+import * as Jquery from "jquery";
 
 ReactDOM.render(
   <React.StrictMode>
